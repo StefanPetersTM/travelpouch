@@ -14,6 +14,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.github.se.travelpouch.model.ListTravelViewModel
+import com.github.se.travelpouch.model.documents.DocumentViewModel
+import com.github.se.travelpouch.ui.documents.DocumentList
 import com.github.se.travelpouch.ui.navigation.NavigationActions
 import com.github.se.travelpouch.ui.navigation.Route
 import com.github.se.travelpouch.ui.navigation.Screen
@@ -41,13 +43,14 @@ fun TravelPouchApp() {
   val navController = rememberNavController()
   val navigationActions = NavigationActions(navController)
   val listTravelViewModel: ListTravelViewModel = viewModel(factory = ListTravelViewModel.Factory)
+  val documentViewModel: DocumentViewModel = viewModel(factory = DocumentViewModel.Factory)
 
   NavHost(navController = navController, startDestination = Route.OVERVIEW) {
     navigation(
         startDestination = Screen.ADD_TRAVEL,
         route = Route.OVERVIEW,
     ) {
-      composable(Screen.ADD_TRAVEL) { AddTravelScreen(listTravelViewModel, navigationActions) }
+      composable(Screen.ADD_TRAVEL) { DocumentList(documentViewModel, navigationActions) }
     }
   }
 }
