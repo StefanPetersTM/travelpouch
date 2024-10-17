@@ -40,8 +40,8 @@ jobs:
     - name: Install dependencies
       run: ./gradlew dependencies
 
-    - name: Build APK
-      run: ./gradlew assembleRelease
+    - name: Build APK Debug
+      run: ./gradlew assembleDebug
 
     - name: List APK files
       run: |
@@ -50,5 +50,6 @@ jobs:
     - name: Upload APK
       uses: actions/upload-artifact@v3
       with:
-        name: "${{ github.event.inputs.name }}-APK"
-        path: app/build/outputs/apk/release/*.apk
+        name: "${{ github.event.inputs.name }}-Debug-APK"
+        #path: app/build/outputs/apk/release/*.apk
+        path: app/build/outputs/apk/debug/*.apk
