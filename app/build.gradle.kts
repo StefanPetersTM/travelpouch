@@ -12,15 +12,6 @@ plugins {
 
 android {
 
-    splits {
-        abi {
-            enable true
-            reset()
-            include "x86", "x86_64", "armeabi-v7a", "arm64-v8a"
-            isUniversalApk false // Correct way to set universal APK
-        }
-    }
-
     namespace = "com.github.se.travelpouch"
     compileSdk = 34
     compileSdk = 34
