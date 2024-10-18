@@ -38,7 +38,15 @@ android {
             useSupportLibrary = true
         }
     }
-    
+    signingConfigs {
+            findByName("debug") ?: create("debug") {
+                storeFile = file(project.findProperty("signing.store") ?: "~/.android/debug.keystore")
+                storePassword = project.findProperty("signing.storePassword")?.toString() ?: "android"
+                keyAlias = project.findProperty("signing.keyAlias")?.toString() ?: "androiddebugkey"
+                keyPassword = project.findProperty("signing.keyPassword")?.toString() ?: "android"
+            }
+        }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -49,19 +57,10 @@ android {
         }
 
         debug {
+            signingConfig = signingConfigs.getByName("debug")
             enableUnitTestCoverage = true
             enableAndroidTestCoverage = true
         }
-            // Configure signing config dynamically
-        signingConfigs {
-            findByName("debug") ?: create("debug") {
-                storeFile = file(project.findProperty("signing.store") ?: "~/.android/debug.keystore")
-                storePassword = project.findProperty("signing.storePassword")?.toString() ?: "android"
-                keyAlias = project.findProperty("signing.keyAlias")?.toString() ?: "androiddebugkey"
-                keyPassword = project.findProperty("signing.keyPassword")?.toString() ?: "android"
-    }
-}
-
     }
 
     testCoverage {
