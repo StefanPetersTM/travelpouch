@@ -40,12 +40,6 @@ android {
     }
     signingConfigs {
         // Ensure debug signing config exists or create a new one
-        create("debug") {
-            storeFile = file(System.getProperty("user.home") + "/.android/debug.keystore")
-            storePassword = "android"
-            keyAlias = "androiddebugkey"
-            keyPassword = "android"
-        }
         create("release") {
             storeFile = file(System.getProperty("user.home") + "/test-release.keystore") // Use custom keystore here
             storePassword = "testpass" // Change this to your keystore password
