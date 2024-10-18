@@ -51,15 +51,17 @@ android {
         debug {
             enableUnitTestCoverage = true
             enableAndroidTestCoverage = true
-
-            // Configure signing config dynamically
-            signingConfig = signingConfigs.create("dynamicDebugConfig") {
-                storeFile = file(project.findProperty("signing.store") ?: "~/.android/debug.keystore")
-                storePassword = project.findProperty("signing.storePassword") ?: "android"
-                keyAlias = project.findProperty("signing.keyAlias") ?: "androiddebugkey"
-                keyPassword = project.findProperty("signing.keyPassword") ?: "android"
-            }
         }
+            // Configure signing config dynamically
+        signingConfigs {
+            create("debug") {
+            storeFile = file(project.findProperty("signing.store") ?: "~/.android/debug.keystore")
+            storePassword = project.findProperty("signing.storePassword")?.toString() ?: "android"
+            keyAlias = project.findProperty("signing.keyAlias")?.toString() ?: "androiddebugkey"
+            keyPassword = project.findProperty("signing.keyPassword")?.toString() ?: "android"
+    }
+}
+
     }
 
     testCoverage {
