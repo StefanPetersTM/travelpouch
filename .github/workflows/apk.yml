@@ -60,7 +60,7 @@ jobs:
           echo "SHA1 fingerprint: ${SHA1}"
 
       - name: Build APK Debug with Custom Key
-        run: ./gradlew clean assembleDebug -Psigning.store=~/.android/debug.keystore -Psigning.storePassword=android -Psigning.keyAlias=androiddebugkey -Psigning.keyPassword=android --info
+        run: ./gradlew clean assembleDebug --info
 
       - name: Check that the APK was really signed with the provided key
         run: jarsigner -verify -verbose -certs app/build/outputs/apk/debug/app-debug.apk
