@@ -46,10 +46,17 @@ android {
             keyAlias = "androiddebugkey"
             keyPassword = "android"
         }
+        create("release") {
+            storeFile = file(System.getProperty("user.home") + "/test-release.keystore") // Use custom keystore here
+            storePassword = "testpass" // Change this to your keystore password
+            keyAlias = "testalias" // Alias used in the keystore
+            keyPassword = "testpass" // Key password
+        }
     }
 
     buildTypes {
         release {
+            signingConfig = signingConfigs.getByName("release")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
