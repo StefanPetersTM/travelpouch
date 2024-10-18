@@ -39,11 +39,11 @@ android {
         }
     }
     signingConfigs {
-            findByName("debug") ?: create("debug") {
-                storeFile = file(project.findProperty("signing.store") ?: "~/.android/debug.keystore")
-                storePassword = project.findProperty("signing.storePassword")?.toString() ?: "android"
-                keyAlias = project.findProperty("signing.keyAlias")?.toString() ?: "androiddebugkey"
-                keyPassword = project.findProperty("signing.keyPassword")?.toString() ?: "android"
+            create("debug") {
+                storeFile = "~/.android/debug.keystore"
+                storePassword = "android"
+                keyAlias = "androiddebugkey"
+                keyPassword = "android"
             }
         }
 
