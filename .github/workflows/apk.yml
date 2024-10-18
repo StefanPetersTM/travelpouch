@@ -28,10 +28,14 @@ jobs:
         with:
           distribution: 'zulu'  
           java-version: '17'
-
-      - name: Create a new keystore
+            # Ensure debug.keystore exists or create it if missing
+      - name: Generate Debug Keystore if Missing
         run: |
-          keytool -genkey -v -keystore ~/.android/debug.keystore -alias androiddebugkey -storepass android -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Debug, OU=Dev, O=YourOrg, L=City, S=State, C=Country"
+          if [ ! -f "~/.android/debug.keystore" ]; then
+            mkdir -p ~/.android
+            keytool -genkey -v -keystore ~/.android/debug.keystore -alias androiddebugkey \
+              -storepass android -keypass android -keyalg RSA -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
+          fi
 
       - name: Extract SHA-1 Fingerprint from Debug Keystore
         id: extract_sha1
