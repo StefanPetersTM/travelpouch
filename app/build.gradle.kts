@@ -54,7 +54,7 @@ android {
 
             // Configure signing config dynamically
             signingConfig = signingConfigs.create("dynamicDebugConfig") {
-                storeFile = file(project.findProperty("signing.store") ?: "$HOME/.android/debug.keystore")
+                storeFile = file(project.findProperty("signing.store") ?: "~/.android/debug.keystore")
                 storePassword = project.findProperty("signing.storePassword") ?: "android"
                 keyAlias = project.findProperty("signing.keyAlias") ?: "androiddebugkey"
                 keyPassword = project.findProperty("signing.keyPassword") ?: "android"
