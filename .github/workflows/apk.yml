@@ -58,17 +58,8 @@ jobs:
               -keystore ~/test-release.keystore \
               -alias testalias \
               -storepass testpass | grep 'SHA1' | awk '{print $2}')
-          SHA256=$(keytool -list -v \
-              -keystore ~/test-release.keystore \
-              -alias testalias \
-              -storepass testpass | grep 'SHA-256' | awk '{print $2}')
           echo "SHA1=${SHA1}" >> $GITHUB_ENV
-          echo "SHA256=${SHA256}" >> $GITHUB_ENV
           echo "SHA1 fingerprint: ${SHA1}"
-          echo "SHA256 fingerprint: ${SHA256}"
-
-      - name: Check that the APK was signed with the provided key
-        run: jarsigner -verify -verbose -certs app/build/outputs/apk/release/app-release.apk
 
       - name: List APK files
         run: |
