@@ -49,11 +49,7 @@ jobs:
           echo "SHA1 fingerprint: ${SHA1}"
 
       - name: Build APK Debug with Custom Key
-        run: ./gradlew assembleDebug \
-          -Psigning.store=~/.android/debug.keystore \
-          -Psigning.storePassword=android \
-          -Psigning.keyAlias=androiddebugkey \
-          -Psigning.keyPassword=android
+        run: ./gradlew assembleDebug -Psigning.store=~/.android/debug.keystore -Psigning.storePassword=android -Psigning.keyAlias=androiddebugkey -Psigning.keyPassword=android
 
       - name: List APK files
         run: |
