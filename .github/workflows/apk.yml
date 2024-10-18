@@ -23,11 +23,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-        # Load google-services.json and local.properties from the secrets
+      # Load google-services.json from the secrets
       - name: Decode secrets
         env:
           GOOGLE_SERVICES: ${{ secrets.GOOGLE_SERVICES }}
-          # LOCAL_PROPERTIES: ${{ secrets.LOCAL_PROPERTIES }}
         run: |
           echo "$GOOGLE_SERVICES" | base64 --decode > ./app/google-services.json
 
@@ -46,16 +45,21 @@ jobs:
       - name: Install dependencies
         run: ./gradlew dependencies
 
-      - name: Build APK Debug
-        run: ./gradlew assembleDebug
+      # Ensure debug.keystore exists or create it if missing
+      - name: Generate Debug Keystore if Missing
+        run: |
+          if [ ! -f "~/.android/debug.keystore" ]; then
+            mkdir -p ~/.android
+            keytool -genkey -v -keystore $HOME/.android/debug.keystore -alias androiddebugkey \
+              -storepass android -keypass android -keyalg RSA -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
+          fi
 
       - name: Extract SHA-1 Fingerprint from Debug Keystore
         run: |
-            keytool -list -v \
-              -keystore $HOME/.android/debug.keystore \
-              -alias androiddebugkey \
-              -storepass android \
-              -keypass android | grep 'SHA1'
+            keytool -list -v -keystore ~/.android/debug.keystore -alias androiddebugkey -storepass android -keypass android | grep 'SHA1'
+
+      - name: Build APK Debug
+        run: ./gradlew assembleDebug
 
       - name: List APK files
         run: |
@@ -65,18 +69,19 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: "${{ github.event.inputs.name }}-Debug-APK"
-          #path: app/build/outputs/apk/release/*.apk
           path: app/build/outputs/apk/debug/*.apk
+
       - name: Create GitHub release
         id: create_release
         uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN}}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.run_number}}
+          tag_name: ${{ github.run_number }}
           release_name: ${{ github.event.inputs.name }} (#${{ github.run_number}})
           draft: false
           prerelease: false
+
       - name: Upload Release Asset
         id: upload-release-asset
         uses: actions/upload-release-asset@v1
