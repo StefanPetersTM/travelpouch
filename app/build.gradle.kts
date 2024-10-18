@@ -14,10 +14,10 @@ android {
 
     splits {
         abi {
-            isEnabled = true // Use isEnabled instead of enable
+            enable() // Correct way to enable ABI splits
             reset()
-            include("arm64-v8a", "armeabi-v7a", "x86", "x86_64") // Use parentheses for include
-            isUniversalApk = false // Use isUniversalApk instead of universalApk
+            include("arm64-v8a", "armeabi-v7a", "x86", "x86_64") // Correct usage of include
+            isUniversalApk = false // Correct way to set universal APK
         }
     }
 
@@ -61,8 +61,8 @@ android {
     buildTypes {
         release {
             signingConfig = signingConfigs.getByName("release")
-            shrinkResources = true
             isMinifyEnabled = true
+            shrinkResources = true // Correctly placed within the release block
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
