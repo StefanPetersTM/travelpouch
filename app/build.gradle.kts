@@ -11,6 +11,16 @@ plugins {
 }
 
 android {
+
+    splits {
+        abi {
+            enable true
+            reset()
+            include 'arm64-v8a', 'armeabi-v7a', 'x86', 'x86_64'
+            universalApk false // This ensures that no universal APK is created
+        }
+    }
+
     namespace = "com.github.se.travelpouch"
     compileSdk = 34
     compileSdk = 34
@@ -51,7 +61,8 @@ android {
     buildTypes {
         release {
             signingConfig = signingConfigs.getByName("release")
-            isMinifyEnabled = false
+            shrinkResources = true
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
