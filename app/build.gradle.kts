@@ -40,7 +40,7 @@ android {
     }
     signingConfigs {
             create("debug") {
-                storeFile = "~/.android/debug.keystore"
+                storeFile = file("~/.android/debug.keystore")
                 storePassword = "android"
                 keyAlias = "androiddebugkey"
                 keyPassword = "android"
