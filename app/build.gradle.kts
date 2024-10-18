@@ -41,7 +41,7 @@ android {
 
     signingConfigs {
         debugConfig {
-            storeFile file(project.hasProperty("signing.store") ? project.signing.store : "$HOME/.android/debug.keystore")
+            storeFile file(project.hasProperty("signing.store") ? project.signing.store : "~/.android/debug.keystore")
             storePassword project.hasProperty("signing.storePassword") ? project.signing.storePassword : "android"
             keyAlias project.hasProperty("signing.keyAlias") ? project.signing.keyAlias : "androiddebugkey"
             keyPassword project.hasProperty("signing.keyPassword") ? project.signing.keyPassword : "android"
