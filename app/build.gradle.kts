@@ -38,6 +38,15 @@ android {
             useSupportLibrary = true
         }
     }
+    signingConfigs {
+        // Ensure debug signing config exists or create a new one
+        findByName("debug") ?: create("debug") {
+            storeFile = file(System.getProperty("user.home") + "/.android/debug.keystore")
+            storePassword = "android"
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
+        }
+    }
 
     buildTypes {
         release {
@@ -49,12 +58,7 @@ android {
         }
 
         debug {
-            signingConfig = create("debug") {
-                storeFile = file("~/.android/debug.keystore")
-                storePassword = "android"
-                keyAlias = "androiddebugkey"
-                keyPassword = "android"
-            }
+            signingConfig = signingConfigs.getByName("debug")
             enableUnitTestCoverage = true
             enableAndroidTestCoverage = true
         }
