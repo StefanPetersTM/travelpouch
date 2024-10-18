@@ -31,18 +31,25 @@ jobs:
 
       - name: Create a new keystore
         run: |
-          keytool -genkey -v -keystore ~/.android/debug.keystore -alias androiddebugkey -storepass android -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Debug, OU=Dev, O=YourOrg, L=City, S=State, C=Country"
+          keytool -genkey -v -keystore $HOME/.android/debug.keystore -alias androiddebugkey -storepass android -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Debug, OU=Dev, O=YourOrg, L=City, S=State, C=Country"
+
+      - name: Extract SHA-1 Fingerprint from Debug Keystore
+        id: extract_sha1
+        run: |
+          SHA1=$(keytool -list -v \
+              -keystore $HOME/.android/debug.keystore \
+              -alias androiddebugkey \
+              -storepass android \
+              -keypass android | grep 'SHA1' | awk '{print $2}')
+          echo "SHA1=${SHA1}" >> $GITHUB_ENV
+          echo "SHA1 fingerprint: ${SHA1}"
 
       - name: Build APK Debug with Custom Key
         run: ./gradlew assembleDebug \
-          -Psigning.store=~/.android/debug.keystore \
+          -Psigning.store=$HOME/.android/debug.keystore \
           -Psigning.storePassword=android \
           -Psigning.keyAlias=androiddebugkey \
           -Psigning.keyPassword=android
-
-      - name: Extract SHA-1 Fingerprint from Debug Keystore
-        run: |
-          keytool -list -v -keystore ~/.android/debug.keystore -alias androiddebugkey -storepass android -keypass android | grep 'SHA1'
 
       - name: List APK files
         run: |
@@ -58,10 +65,10 @@ jobs:
         id: create_release
         uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN}}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.run_number}}
-          release_name: ${{ github.event.inputs.name }} (#${{ github.run_number}})
+          tag_name: ${{ github.run_number }}
+          release_name: ${{ github.event.inputs.name }} (#${{ github.run_number }})
           draft: false
           prerelease: false
 
