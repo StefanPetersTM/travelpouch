@@ -10,7 +10,7 @@ on:
   push:
     tags:
       - 'v*'
-        
+
 permissions:
   contents: write
 
@@ -23,43 +23,30 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Load google-services.json from the secrets
-      - name: Decode secrets
-        env:
-          GOOGLE_SERVICES: ${{ secrets.GOOGLE_SERVICES }}
-        run: |
-          echo "$GOOGLE_SERVICES" | base64 --decode > ./app/google-services.json
-
-      - name: Set permissions for google-services.json
-        run: chmod 644 ./app/google-services.json
-
-      - name: Set executable permissions for gradlew
-        run: chmod +x ./gradlew
-
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
-          distribution: 'zulu'  # Use Zulu OpenJDK
+          distribution: 'zulu'  
           java-version: '17'
 
-      - name: Install dependencies
-        run: ./gradlew dependencies
-
-      # Ensure debug.keystore exists or create it if missing
-      - name: Generate Debug Keystore if Missing
+      - name: Create a new keystore
         run: |
-          if [ ! -f "~/.android/debug.keystore" ]; then
-            mkdir -p ~/.android
-            keytool -genkey -v -keystore $HOME/.android/debug.keystore -alias androiddebugkey \
-              -storepass android -keypass android -keyalg RSA -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
-          fi
+          keytool -genkey -v -keystore $HOME/.android/debug.keystore -alias androiddebugkey -storepass android -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Debug, OU=Dev, O=YourOrg, L=City, S=State, C=Country"
+
+      - name: Build APK Debug with Custom Key
+        run: ./gradlew assembleDebug \
+          -Psigning.store=$HOME/.android/debug.keystore \
+          -Psigning.storePassword=android \
+          -Psigning.keyAlias=androiddebugkey \
+          -Psigning.keyPassword=android
 
       - name: Extract SHA-1 Fingerprint from Debug Keystore
         run: |
-            keytool -list -v -keystore ~/.android/debug.keystore -alias androiddebugkey -storepass android -keypass android | grep 'SHA1'
-
-      - name: Build APK Debug
-        run: ./gradlew assembleDebug
+          keytool -list -v \
+            -keystore $HOME/.android/debug.keystore \
+            -alias androiddebugkey \
+            -storepass android \
+            -keypass android | grep 'SHA1'
 
       - name: List APK files
         run: |
@@ -75,9 +62,9 @@ jobs:
         id: create_release
         uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN}}
         with:
-          tag_name: ${{ github.run_number }}
+          tag_name: ${{ github.run_number}}
           release_name: ${{ github.event.inputs.name }} (#${{ github.run_number}})
           draft: false
           prerelease: false
