@@ -28,7 +28,18 @@ jobs:
         with:
           distribution: 'zulu'  
           java-version: '17'
-            # Ensure debug.keystore exists or create it if missing
+            
+      # Load google-services.json and local.properties from the secrets
+      - name: Decode secrets
+        env:
+          GOOGLE_SERVICES: ${{ secrets.GOOGLE_SERVICES }}
+          # LOCAL_PROPERTIES: ${{ secrets.LOCAL_PROPERTIES }}
+        run: |
+          echo "$GOOGLE_SERVICES" | base64 --decode > ./app/google-services.json
+
+      - name: Set permissions for google-services.json
+        run: chmod 644 ./app/google-services.json
+
       - name: Generate Debug Keystore if Missing
         run: |
           if [ ! -f "~/.android/debug.keystore" ]; then
