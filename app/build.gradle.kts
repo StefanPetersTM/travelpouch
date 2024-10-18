@@ -14,10 +14,10 @@ android {
 
     splits {
         abi {
-            enable true
+            isEnabled = true // Use isEnabled instead of enable
             reset()
-            include 'arm64-v8a', 'armeabi-v7a', 'x86', 'x86_64'
-            universalApk false // This ensures that no universal APK is created
+            include("arm64-v8a", "armeabi-v7a", "x86", "x86_64") // Use parentheses for include
+            isUniversalApk = false // Use isUniversalApk instead of universalApk
         }
     }
 
