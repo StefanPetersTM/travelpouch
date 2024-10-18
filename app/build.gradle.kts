@@ -39,6 +39,21 @@ android {
         }
     }
 
+    signingConfigs {
+        debugConfig {
+            storeFile file(project.hasProperty("signing.store") ? project.signing.store : "$HOME/.android/debug.keystore")
+            storePassword project.hasProperty("signing.storePassword") ? project.signing.storePassword : "android"
+            keyAlias project.hasProperty("signing.keyAlias") ? project.signing.keyAlias : "androiddebugkey"
+            keyPassword project.hasProperty("signing.keyPassword") ? project.signing.keyPassword : "android"
+        }
+    }
+
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.debugConfig // Use the debug signing config
+        }
+    }
+    
     buildTypes {
         release {
             isMinifyEnabled = false
