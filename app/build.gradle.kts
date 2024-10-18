@@ -40,7 +40,7 @@ android {
     }
     signingConfigs {
         // Ensure debug signing config exists or create a new one
-        findByName("debug") ?: create("debug") {
+        create("debug") {
             storeFile = file(System.getProperty("user.home") + "/.android/debug.keystore")
             storePassword = "android"
             keyAlias = "androiddebugkey"
