@@ -40,18 +40,22 @@ android {
         }
     }
     signingConfigs {
-        // Ensure debug signing config exists or create a new one
-        create("release") {
-            storeFile = file(System.getProperty("user.home") + "/test-release.keystore") // Use custom keystore here
-            storePassword = "testpass" // Change this to your keystore password
-            keyAlias = "testalias" // Alias used in the keystore
-            keyPassword = "testpass" // Key password
+        release {
+            if (System.getenv("KEYSTORE_FILE") && System.getenv("KEYSTORE_PASSWORD") &&
+                System.getenv("KEY_ALIAS") && System.getenv("KEY_PASSWORD")) {
+                storeFile file(System.getenv("KEYSTORE_FILE"))
+                storePassword System.getenv("KEYSTORE_PASSWORD")
+                keyAlias System.getenv("KEY_ALIAS")
+                keyPassword System.getenv("KEY_PASSWORD")
+            }
         }
     }
 
     buildTypes {
         release {
-            signingConfig = signingConfigs.getByName("release")
+            if (signingConfigs.release.storeFile) {
+                signingConfig signingConfigs.release
+            }
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(
@@ -61,7 +65,6 @@ android {
         }
 
         debug {
-            signingConfig = signingConfigs.getByName("debug")
             enableUnitTestCoverage = true
             enableAndroidTestCoverage = true
         }
