@@ -40,14 +40,14 @@ android {
         }
     }
     signingConfigs {
-        create("release") {
-            val keystoreFile = System.getenv("KEYSTORE_FILE") ?: ""
-            val keystorePassword = System.getenv("KEYSTORE_PASSWORD") ?: ""
-            val keyAlias = System.getenv("KEY_ALIAS") ?: ""
-            val keyPassword = System.getenv("KEY_PASSWORD") ?: ""
+        // Check if the necessary environment variables are set
+        val keystoreFile = System.getenv("KEYSTORE_FILE") ?: ""
+        val keystorePassword = System.getenv("KEYSTORE_PASSWORD") ?: ""
+        val keyAlias = System.getenv("KEY_ALIAS") ?: ""
+        val keyPassword = System.getenv("KEY_PASSWORD") ?: ""
 
-            // Check if keystoreFile is not empty before setting other properties
-            if (keystoreFile.isNotEmpty()) {
+        if (keystoreFile.isNotEmpty() && keystorePassword.isNotEmpty() && keyAlias.isNotEmpty() && keyPassword.isNotEmpty()) {
+            create("release") {
                 storeFile(file(keystoreFile))
                 storePassword(keystorePassword)
                 keyAlias(keyAlias)
@@ -57,14 +57,15 @@ android {
     }
 
     buildTypes {
-        getByName("release") {
-            signingConfig = signingConfigs.getByName("release")
+        release {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            // Only assign signing config if it exists
+            signingConfig = signingConfigs.findByName("release")
         }
 
         debug {
