@@ -58,7 +58,8 @@ android {
 
     buildTypes {
         getByName("release") {
-            signingConfig = signingConfigs.getByName("release")
+            val releaseSigningConfig = signingConfigs.findByName("release")
+            signingConfig = releaseSigningConfig ?: null // Set to null if not found
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(
