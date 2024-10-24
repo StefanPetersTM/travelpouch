@@ -47,10 +47,15 @@ jobs:
               -storepass testpass -keypass testpass -keyalg RSA -validity 10000 \
               -dname "CN=Test Release,O=Testing,C=US"
           fi
+      - name: Get full path of keystore
+        id: get_keystore_path
+        run: |
+          KEYS_PATH=$(readlink -f ~/test-release.keystore)
+          echo "KEYSTORE_FILE=$KEYS_PATH" >> $GITHUB_ENV
 
+      
       - name: Build APK Release with Custom Key
         env:
-          KEYSTORE_FILE: ~/test-release.keystore
           KEYSTORE_PASSWORD: testpass
           KEY_ALIAS: testalias
           KEY_PASSWORD: testpass
