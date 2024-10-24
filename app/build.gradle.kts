@@ -40,22 +40,25 @@ android {
         }
     }
     signingConfigs {
-        release {
-            if (System.getenv("KEYSTORE_FILE") && System.getenv("KEYSTORE_PASSWORD") &&
-                System.getenv("KEY_ALIAS") && System.getenv("KEY_PASSWORD")) {
-                storeFile file(System.getenv("KEYSTORE_FILE"))
-                storePassword System.getenv("KEYSTORE_PASSWORD")
-                keyAlias System.getenv("KEY_ALIAS")
-                keyPassword System.getenv("KEY_PASSWORD")
+        create("release") {
+            val keystoreFile = System.getenv("KEYSTORE_FILE")
+            val keystorePassword = System.getenv("KEYSTORE_PASSWORD")
+            val keyAlias = System.getenv("KEY_ALIAS")
+            val keyPassword = System.getenv("KEY_PASSWORD")
+
+            if (!keystoreFile.isNullOrEmpty() && !keystorePassword.isNullOrEmpty() &&
+                !keyAlias.isNullOrEmpty() && !keyPassword.isNullOrEmpty()) {
+                storeFile(file(keystoreFile))
+                storePassword(keystorePassword)
+                keyAlias(keyAlias)
+                keyPassword(keyPassword)
             }
         }
     }
 
     buildTypes {
-        release {
-            if (signingConfigs.release.storeFile) {
-                signingConfig signingConfigs.release
-            }
+        getByName("release") {
+            signingConfig = signingConfigs.getByName("release")
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(
