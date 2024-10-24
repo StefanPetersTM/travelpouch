@@ -54,6 +54,7 @@ android {
             )
             // Only assign signing config if it exists
             if (keystoreFile != null && keystorePassword != null && keyAlias != null && keyPassword != null) {
+                println("creating a release config")
                 signingConfig = signingConfigs.create("release") {
                     storeFile(file(keystoreFile))
                     storePassword(keystorePassword)
@@ -61,6 +62,9 @@ android {
                     keyPassword(keyPassword)
                 }
             }
+            else {
+                println("No release signing config set.")
+                }
         }
 
         debug {
