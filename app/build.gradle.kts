@@ -41,13 +41,13 @@ android {
     }
     signingConfigs {
         create("release") {
-            val keystoreFile = System.getenv("KEYSTORE_FILE")
-            val keystorePassword = System.getenv("KEYSTORE_PASSWORD")
-            val keyAlias = System.getenv("KEY_ALIAS")
-            val keyPassword = System.getenv("KEY_PASSWORD")
+            val keystoreFile = System.getenv("KEYSTORE_FILE") ?: ""
+            val keystorePassword = System.getenv("KEYSTORE_PASSWORD") ?: ""
+            val keyAlias = System.getenv("KEY_ALIAS") ?: ""
+            val keyPassword = System.getenv("KEY_PASSWORD") ?: ""
 
-            if (!keystoreFile.isNullOrEmpty() && !keystorePassword.isNullOrEmpty() &&
-                !keyAlias.isNullOrEmpty() && !keyPassword.isNullOrEmpty()) {
+            // Check if keystoreFile is not empty before setting other properties
+            if (keystoreFile.isNotEmpty()) {
                 storeFile(file(keystoreFile))
                 storePassword(keystorePassword)
                 keyAlias(keyAlias)
@@ -58,8 +58,7 @@ android {
 
     buildTypes {
         getByName("release") {
-            val releaseSigningConfig = signingConfigs.findByName("release")
-            signingConfig = releaseSigningConfig ?: null // Set to null if not found
+            signingConfig = signingConfigs.getByName("release")
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(
