@@ -15,13 +15,17 @@ android {
     namespace = "com.github.se.travelpouch"
     compileSdk = 34
     compileSdk = 34
-
     // Load the API key from local.properties
     val localProperties = Properties()
     val localPropertiesFile = rootProject.file("local.properties")
     if (localPropertiesFile.exists()) {
         localProperties.load(FileInputStream(localPropertiesFile))
     }
+
+    val keystoreFile = System.getenv("KEYSTORE_FILE") ?: localProperties.getProperty("KEYSTORE_FILE")
+    val keystorePassword = System.getenv("KEYSTORE_PASSWORD") ?: localProperties.getProperty("KEYSTORE_PASSWORD")
+    val keyAlias = System.getenv("KEY_ALIAS") ?: localProperties.getProperty("KEY_ALIAS")
+    val keyPassword = System.getenv("KEY_PASSWORD") ?: localProperties.getProperty("KEY_PASSWORD")
 
     val mapsApiKey: String = localProperties.getProperty("MAPS_API_KEY") ?: ""
 
@@ -39,22 +43,6 @@ android {
             useSupportLibrary = true
         }
     }
-    signingConfigs {
-        // Check if the necessary environment variables are set
-        val keystoreFile = System.getenv("KEYSTORE_FILE") ?: ""
-        val keystorePassword = System.getenv("KEYSTORE_PASSWORD") ?: ""
-        val keyAlias = System.getenv("KEY_ALIAS") ?: ""
-        val keyPassword = System.getenv("KEY_PASSWORD") ?: ""
-
-        if (keystoreFile.isNotEmpty() && keystorePassword.isNotEmpty() && keyAlias.isNotEmpty() && keyPassword.isNotEmpty()) {
-            create("release") {
-                storeFile(file(keystoreFile))
-                storePassword(keystorePassword)
-                keyAlias(keyAlias)
-                keyPassword(keyPassword)
-            }
-        }
-    }
 
     buildTypes {
         release {
@@ -65,7 +53,14 @@ android {
                 "proguard-rules.pro"
             )
             // Only assign signing config if it exists
-            signingConfig = signingConfigs.findByName("release")
+            if (keystoreFile != null && keystorePassword != null && keyAlias != null && keyPassword != null) {
+                signingConfig = signingConfigs.create("release") {
+                    storeFile(file(keystoreFile))
+                    storePassword(keystorePassword)
+                    keyAlias(keyAlias)
+                    keyPassword(keyPassword)
+                }
+            }
         }
 
         debug {
