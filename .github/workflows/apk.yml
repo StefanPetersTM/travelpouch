@@ -30,14 +30,17 @@ jobs:
           java-version: '17'
 
       # Load google-services.json and local.properties from the secrets
-      - name: Decode google-services.json
+      - name: Decode google-services.json and google maps api key
         env:
+          GOOGLE_MAPS_API_KEY: ${{secrets.GOOGLE_MAPS_API_KEY}}
           GOOGLE_SERVICES: ${{ secrets.GOOGLE_SERVICES }}
         run: |
           echo "$GOOGLE_SERVICES" | base64 --decode > ./app/google-services.json
-
-      - name: Set permissions for google-services.json
-        run: chmod 644 ./app/google-services.json
+          echo "MAPS_API_KEY=$(echo "$GOOGLE_MAPS_API_KEY" | base64 --decode)" > /local.properties
+        
+      - name: Set permissions for google-services.json and local.properties
+        run: chmod 644 ./app/google-services.json && chmod 644 ./local.properties
+        
 
       # Generate a test keystore if not available
       - name: Generate Release Keystore if Missing
