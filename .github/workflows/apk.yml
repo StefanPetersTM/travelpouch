@@ -29,7 +29,7 @@ jobs:
           distribution: 'zulu'
           java-version: '17'
 
-      # Load google-services.json and local.properties from the secrets
+      # Load google-services.json and gmap to system env
       - name: Decode google-services.json and google maps api key
         env:
           GOOGLE_MAPS_API_KEY: ${{secrets.GOOGLE_MAPS_API_KEY}}
