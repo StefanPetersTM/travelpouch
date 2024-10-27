@@ -11,7 +11,6 @@ plugins {
 }
 
 android {
-
     namespace = "com.github.se.travelpouch"
     compileSdk = 34
     compileSdk = 34
@@ -26,7 +25,6 @@ android {
     val keystorePassword = System.getenv("KEYSTORE_PASSWORD") ?: localProperties.getProperty("KEYSTORE_PASSWORD")
     val keyAlias = System.getenv("KEY_ALIAS") ?: localProperties.getProperty("KEY_ALIAS")
     val keyPassword = System.getenv("KEY_PASSWORD") ?: localProperties.getProperty("KEY_PASSWORD")
-
     val mapsApiKey: String = localProperties.getProperty("MAPS_API_KEY") ?: ""
 
     defaultConfig {
@@ -64,7 +62,7 @@ android {
             }
             else {
                 println("No release signing config set.")
-                }
+            }
         }
 
         debug {
