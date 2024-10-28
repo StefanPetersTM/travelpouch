@@ -30,14 +30,12 @@ jobs:
           java-version: '17'
 
       # Load google-services.json
-      - name: Decode google-services.json and google maps api key
+      - name: Decode google-services.json and google maps api key and add to system env
         env:
           GOOGLE_MAPS_API_KEY: ${{secrets.GOOGLE_MAPS_API_KEY}}
           GOOGLE_SERVICES: ${{ secrets.GOOGLE_SERVICES }}
         run: |
           echo "$GOOGLE_SERVICES" | base64 --decode > ./app/google-services.json
-      - name: Decode google maps api key and add to system env
-        run: |
           MAPS_API_KEY=$(echo "$GOOGLE_MAPS_API_KEY" | base64 --decode)
           echo "MAPS_API_KEY=$MAPS_API_KEY" >> $GITHUB_ENV
         
